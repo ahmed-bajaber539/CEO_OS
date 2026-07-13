@@ -6,7 +6,6 @@ import type { AIMessage } from '../../core/types'
 
 interface ChatMessageProps {
   message: AIMessage
-  isLast?: boolean
 }
 
 /**
@@ -16,7 +15,7 @@ interface ChatMessageProps {
  *  - Assistant messages: left-aligned with bot icon + copy button
  *  - Manual markdown rendering (bold, italic, lists, code blocks, tables)
  */
-export function ChatMessage({ message, isLast }: ChatMessageProps) {
+export function ChatMessage({ message }: ChatMessageProps) {
   const [copied, setCopied] = useState(false)
 
   const isUser = message.role === 'user'
@@ -37,7 +36,7 @@ export function ChatMessage({ message, isLast }: ChatMessageProps) {
     >
       {/* Avatar */}
       {!isUser && (
-        <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+        <div className="shrink-0 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
           <Bot className="h-4 w-4 text-primary" />
         </div>
       )}
@@ -51,7 +50,7 @@ export function ChatMessage({ message, isLast }: ChatMessageProps) {
             : 'bg-muted rounded-bl-md',
         )}
       >
-        <div className="text-sm whitespace-pre-wrap break-words">
+        <div className="text-sm whitespace-pre-wrap wrap-break-word">
           {renderMarkdown(content)}
         </div>
       </div>
@@ -61,7 +60,7 @@ export function ChatMessage({ message, isLast }: ChatMessageProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-7 w-7 self-end flex-shrink-0 opacity-50 hover:opacity-100"
+          className="h-7 w-7 self-end shrink-0 opacity-50 hover:opacity-100"
           onClick={handleCopy}
           title="نسخ الرد"
         >
@@ -75,7 +74,7 @@ export function ChatMessage({ message, isLast }: ChatMessageProps) {
 
       {/* User avatar */}
       {isUser && (
-        <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+        <div className="shrink-0 h-8 w-8 rounded-full bg-primary flex items-center justify-center">
           <User className="h-4 w-4 text-primary-foreground" />
         </div>
       )}

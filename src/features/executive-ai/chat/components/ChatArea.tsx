@@ -52,7 +52,6 @@ export function ChatArea({
             <ChatMessage
               key={i}
               message={msg}
-              isLast={i === messages.length - 1 && !streamingContent}
             />
           ))}
 
@@ -60,7 +59,6 @@ export function ChatArea({
           {isStreaming && streamingContent && (
             <ChatMessage
               message={{ role: 'assistant', content: streamingContent }}
-              isLast={false}
             />
           )}
 

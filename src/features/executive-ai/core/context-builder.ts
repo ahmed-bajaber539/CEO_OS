@@ -17,8 +17,8 @@ import { ActivityService } from '@/services/activity-service'
  */
 export class SmartContextBuilder implements IContextProvider {
 
-  constructor(manifest: AgentManifest) {
-    // manifest stored for future context-aware optimizations
+  constructor(_manifest: AgentManifest) {
+    // manifest reserved for future context-aware optimizations
   }
 
   async build(scope: ContextScope): Promise<AIContext> {

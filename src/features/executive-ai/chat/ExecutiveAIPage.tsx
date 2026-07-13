@@ -29,7 +29,6 @@ export default function ExecutiveAIPage() {
     stopGeneration,
     switchConversation,
     newConversation,
-    clearConversation,
     deleteConversation,
   } = useChat()
 
