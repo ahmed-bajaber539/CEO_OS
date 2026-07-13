@@ -1,4 +1,4 @@
-import { Target, FolderKanban, CalendarCheck, Lightbulb, Scale, Activity } from 'lucide-react'
+import { Target, FolderKanban, CalendarCheck, Scale } from 'lucide-react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'

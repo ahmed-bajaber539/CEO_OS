@@ -101,7 +101,7 @@ export function useAddGoalTask() {
 export function useDeleteGoalTask() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ taskId, goalId }: { taskId: string; goalId: string }) => GoalService.deleteTask(taskId),
+    mutationFn: ({ taskId }: { taskId: string; goalId: string }) => GoalService.deleteTask(taskId),
     onSuccess: (_, { goalId }) => { qc.invalidateQueries({ queryKey: KEYS.detail(goalId) }); qc.invalidateQueries({ queryKey: KEYS.all }) },
   })
 }

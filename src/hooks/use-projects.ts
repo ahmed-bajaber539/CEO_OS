@@ -95,7 +95,7 @@ export function useAddProjectRisk() {
 export function useDeleteProjectTask() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ taskId, projectId }: { taskId: string; projectId: string }) => ProjectService.deleteTask(taskId),
+    mutationFn: ({ taskId }: { taskId: string; projectId: string }) => ProjectService.deleteTask(taskId),
     onSuccess: (_, { projectId }) => qc.invalidateQueries({ queryKey: KEYS.detail(projectId) }),
   })
 }

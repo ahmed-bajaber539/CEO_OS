@@ -58,7 +58,7 @@ type GoalRow = Database["public"]["Tables"]["goals"]["Row"]
 type GoalType = Database["public"]["Enums"]["goal_type"]
 
 // ─── Expandable Goal Card ────────────────────────────────────
-function GoalCard({ goal, goalType }: { goal: GoalRow; goalType: GoalType }) {
+function GoalCard({ goal }: { goal: GoalRow; goalType: GoalType }) {
   const [expanded, setExpanded] = useState(false)
   const { data: children } = useGoalChildren(goal.id)
   const { data: progress } = useGoalProgress(goal.id)

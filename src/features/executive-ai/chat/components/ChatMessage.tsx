@@ -101,7 +101,6 @@ function renderMarkdown(text: string): React.ReactNode {
 
     // Code block (```)
     if (line.trim().startsWith('```')) {
-      const lang = line.trim().slice(3).trim()
       const codeLines: string[] = []
       i++
       while (i < lines.length && !lines[i].trim().startsWith('```')) {
@@ -266,8 +265,6 @@ function renderInlineMarkdown(text: string): React.ReactNode {
 
     // Process bold and italic within this part
     let processed: React.ReactNode = part
-    const boldRegex = /\*\*(.+?)\*\*/g
-    const italicRegex = /\*(.+?)\*/g
 
     // Collect segments
     const segments: React.ReactNode[] = []

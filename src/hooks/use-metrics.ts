@@ -50,7 +50,7 @@ export function useDeleteMetricCategory() {
 export function useDeleteMetricValue() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: ({ valueId, categoryId }: { valueId: string; categoryId: string }) => MetricService.deleteValue(valueId),
+    mutationFn: ({ valueId }: { valueId: string; categoryId: string }) => MetricService.deleteValue(valueId),
     onSuccess: (_, { categoryId }) => qc.invalidateQueries({ queryKey: KEYS.values(categoryId) }),
   })
 }

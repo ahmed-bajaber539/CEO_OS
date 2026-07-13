@@ -16,7 +16,6 @@ import { useGoals } from "@/hooks/use-goals"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
 import {
   Select,
   SelectContent,
@@ -34,8 +33,6 @@ import {
   Link2,
   Unlink2,
 } from "lucide-react"
-import { StatusBadge } from "@/components/shared/StatusBadge"
-import { TaskRow } from "@/components/shared/TaskRow"
 import { LoadingPage } from "@/components/shared/LoadingSkeleton"
 import { STATUS } from "@/lib/constants"
 import { formatDate } from "@/lib/utils"

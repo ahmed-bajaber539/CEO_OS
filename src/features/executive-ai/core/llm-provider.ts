@@ -1,5 +1,4 @@
 import type { ILLMProvider, AIMessage, AIContext, ToolDefinition, SSEEvent, AgentManifest } from './types'
-import { supabase } from '@/lib/supabase'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string

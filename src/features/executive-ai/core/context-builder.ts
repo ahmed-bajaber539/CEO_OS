@@ -16,10 +16,9 @@ import { ActivityService } from '@/services/activity-service'
  * Each domain fetch is wrapped in try/catch — a single failure doesn't crash the build.
  */
 export class SmartContextBuilder implements IContextProvider {
-  private manifest: AgentManifest
 
   constructor(manifest: AgentManifest) {
-    this.manifest = manifest
+    // manifest stored for future context-aware optimizations
   }
 
   async build(scope: ContextScope): Promise<AIContext> {

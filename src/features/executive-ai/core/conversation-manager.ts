@@ -5,7 +5,6 @@ import type {
   AIMessage,
   ToolCall,
   ToolResult,
-  SSEEvent,
   IIntentResolver,
   IContextProvider,
   IMemoryStore,

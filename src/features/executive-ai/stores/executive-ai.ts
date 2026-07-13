@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { AIMessage, Conversation, ResolvedIntent, ToolCall } from '../core/types'
+import type { AIMessage, Conversation, ResolvedIntent } from '../core/types'
 
 // ─── ID Generator ──────────────────────────────────────────────
 
@@ -76,7 +76,7 @@ interface ExecutiveAIState {
 
 // ─── Store ─────────────────────────────────────────────────────
 
-export const useExecutiveAIStore = create<ExecutiveAIState>((set, get) => ({
+export const useExecutiveAIStore = create<ExecutiveAIState>((set, _get) => ({
   conversations: [],
   activeConversationId: null,
   messages: [],

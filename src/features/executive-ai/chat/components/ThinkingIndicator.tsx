@@ -1,5 +1,3 @@
-import { cn } from '@/lib/utils'
-
 /**
  * ThinkingIndicator — animated dots shown while the AI is processing.
  * Arabic label: "جاري التحليل..."
