@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom"
+import { NavLink, useLocation } from "react-router-dom"
 import {
   LayoutDashboard,
   FolderKanban,
@@ -10,6 +10,7 @@ import {
   Bot,
   PanelLeftClose,
   PanelLeft,
+  X,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { NAV_ITEMS } from "@/lib/constants"
@@ -17,6 +18,7 @@ import { useSidebarStore } from "@/stores/sidebar"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { useEffect } from "react"
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard,
@@ -30,24 +32,41 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 }
 
 export function Sidebar() {
-  const { isCollapsed, toggle } = useSidebarStore()
+  const { isCollapsed, isMobileOpen, toggle, setMobileOpen } = useSidebarStore()
+  const location = useLocation()
 
-  return (
-    <aside
-      className={cn(
-        "sidebar flex flex-col border-e bg-card transition-all duration-300",
-        isCollapsed ? "w-17" : "w-60"
-      )}
-    >
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [location.pathname])
+
+  // Close mobile sidebar on resize to desktop
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)")
+    const handler = (e: MediaQueryListEvent) => { if (e.matches) setMobileOpen(false) }
+    mq.addEventListener("change", handler)
+    return () => mq.removeEventListener("change", handler)
+  }, [setMobileOpen])
+
+  const sidebarContent = (
+    <>
       {/* Logo */}
-      <div className={cn("flex h-14 items-center border-b px-4", isCollapsed && "justify-center")}>
+      <div className={cn("flex h-14 items-center border-b px-4", isCollapsed && "md:justify-center")}>
         {!isCollapsed && (
           <span className="font-semibold text-lg tracking-tight">CEO OS</span>
         )}
+        {/* Close button on mobile */}
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="md:hidden rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors ml-auto"
+        >
+          <X className="size-4" />
+        </button>
+        {/* Collapse toggle on desktop */}
         <button
           onClick={toggle}
           className={cn(
-            "rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors",
+            "hidden md:block rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors",
             !isCollapsed && "ml-auto"
           )}
         >
@@ -64,6 +83,7 @@ export function Sidebar() {
               <NavLink
                 key={item.path}
                 to={item.path}
+                onClick={() => setMobileOpen(false)}
                 className={({ isActive }) =>
                   cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
@@ -71,7 +91,7 @@ export function Sidebar() {
                     isActive
                       ? "bg-accent text-accent-foreground"
                       : "text-muted-foreground",
-                    isCollapsed && "justify-center px-2"
+                    isCollapsed && "md:justify-center md:px-2"
                   )
                 }
               >
@@ -84,7 +104,7 @@ export function Sidebar() {
               return (
                 <Tooltip key={item.path} delayDuration={0}>
                   <TooltipTrigger asChild>{link}</TooltipTrigger>
-                  <TooltipContent side="right">{item.label}</TooltipContent>
+                  <TooltipContent side="right" className="hidden md:block">{item.label}</TooltipContent>
                 </Tooltip>
               )
             }
@@ -105,15 +125,44 @@ export function Sidebar() {
           ) : (
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
-                <div className="flex justify-center rounded-lg bg-muted/50 p-2 text-xs text-muted-foreground cursor-default">
+                <div className="hidden md:flex justify-center rounded-lg bg-muted/50 p-2 text-xs text-muted-foreground cursor-default">
                   <Target className="size-4" />
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="right">المرحلة 1: التأسيس التقني</TooltipContent>
+              <TooltipContent side="right" className="hidden md:block">المرحلة 1: التأسيس التقني</TooltipContent>
             </Tooltip>
           )}
         </div>
       </ScrollArea>
-    </aside>
+    </>
+  )
+
+  return (
+    <>
+      {/* Desktop: inline sidebar */}
+      <aside
+        className={cn(
+          "hidden md:flex sidebar flex-col border-e bg-card transition-all duration-300",
+          isCollapsed ? "w-17" : "w-60"
+        )}
+      >
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile: overlay sidebar */}
+      {isMobileOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/50 transition-opacity"
+            onClick={() => setMobileOpen(false)}
+          />
+          {/* Panel */}
+          <aside className="fixed inset-y-0 right-0 w-64 flex flex-col border-l bg-card shadow-lg animate-in slide-in-from-right">
+            {sidebarContent}
+          </aside>
+        </div>
+      )}
+    </>
   )
 }

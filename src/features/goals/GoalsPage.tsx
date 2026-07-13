@@ -259,20 +259,22 @@ function GoalCard({ goal, goalType }: { goal: GoalRow; goalType: GoalType }) {
             {/* Indicators */}
             <div>
               <p className="text-sm font-medium mb-2">مؤشرات الأداء</p>
-              <div className="flex gap-2 mb-2">
-                <Input
-                  value={indicatorLabel}
-                  onChange={(e) => setIndicatorLabel(e.target.value)}
-                  placeholder="اسم المؤشر..."
-                  size={10}
-                />
-                <Input
-                  value={indicatorTarget}
-                  onChange={(e) => setIndicatorTarget(e.target.value)}
-                  placeholder="القيمة المستهدفة"
-                  size={10}
-                  className="max-w-[120px]"
-                />
+              <div className="flex flex-col sm:flex-row gap-2 mb-2">
+                <div className="flex gap-2 flex-1">
+                  <Input
+                    value={indicatorLabel}
+                    onChange={(e) => setIndicatorLabel(e.target.value)}
+                    placeholder="اسم المؤشر..."
+                    size={10}
+                  />
+                  <Input
+                    value={indicatorTarget}
+                    onChange={(e) => setIndicatorTarget(e.target.value)}
+                    placeholder="القيمة المستهدفة"
+                    size={10}
+                    className="max-w-[120px]"
+                  />
+                </div>
                 <Button
                   size="sm"
                   onClick={() => {

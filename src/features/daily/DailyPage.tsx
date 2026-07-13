@@ -166,7 +166,7 @@ export default function DailyPage() {
           </CardHeader>
           <CardContent>
             {/* Add task input */}
-            <div className="flex gap-2 mb-4">
+            <div className="flex flex-col sm:flex-row gap-2 mb-4">
               <Input
                 value={newTask}
                 onChange={(e) => setNewTask(e.target.value)}
@@ -175,13 +175,15 @@ export default function DailyPage() {
                   if (e.key === "Enter") handleAddTask()
                 }}
                 disabled={addTask.isPending}
+                className="flex-1"
               />
               <Button
-                size="icon"
                 onClick={handleAddTask}
                 disabled={!newTask.trim() || !daily || addTask.isPending}
+                className="sm:w-auto"
               >
-                <Plus className="size-4" />
+                <Plus className="size-4 sm:mr-1" />
+                <span className="sm:inline hidden">إضافة</span>
               </Button>
             </div>
 
@@ -194,7 +196,7 @@ export default function DailyPage() {
                   return (
                     <div
                       key={task.id}
-                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors group"
+                      className="flex flex-wrap items-center gap-2 p-3 rounded-lg hover:bg-accent/50 transition-colors group"
                     >
                       <button
                         onClick={() =>
@@ -214,14 +216,14 @@ export default function DailyPage() {
                       <span
                         className={
                           task.done
-                            ? "line-through text-muted-foreground flex-1"
-                            : "flex-1"
+                            ? "line-through text-muted-foreground flex-1 min-w-0"
+                            : "flex-1 min-w-0"
                         }
                       >
                         {task.text}
                       </span>
                       {priority && (
-                        <Badge variant={priority.badge}>{priority.label}</Badge>
+                        <Badge variant={priority.badge} className="text-xs">{priority.label}</Badge>
                       )}
                       <button
                         onClick={() => deleteTask.mutate(task.id)}

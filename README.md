@@ -16,16 +16,16 @@
 
 ## 🛠️ التقنيات
 
-| الطبقة | التقنية |
-|--------|---------|
-| الواجهة | React 19 + TypeScript + Tailwind CSS 4 |
-| التوجيه | React Router v7 |
-| الحالة | Zustand |
-| البيانات | TanStack Query + Supabase |
-| القاعدة | PostgreSQL (Supabase) |
+| الطبقة           | التقنية                                  |
+| ---------------- | ---------------------------------------- |
+| الواجهة          | React 19 + TypeScript + Tailwind CSS 4   |
+| التوجيه          | React Router v7                          |
+| الحالة           | Zustand                                  |
+| البيانات         | TanStack Query + Supabase                |
+| القاعدة          | PostgreSQL (Supabase)                    |
 | الذكاء الاصطناعي | DeepSeek API عبر Supabase Edge Functions |
-| المكونات | Radix UI + Lucide Icons |
-| البناء | Vite 6 |
+| المكونات         | Radix UI + Lucide Icons                  |
+| البناء           | Vite 6                                   |
 
 ## ⚙️ الإعداد
 

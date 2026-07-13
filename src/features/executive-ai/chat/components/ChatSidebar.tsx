@@ -1,4 +1,4 @@
-import { Plus, MessageSquare, Trash2 } from 'lucide-react'
+import { Plus, MessageSquare, Trash2, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
@@ -10,6 +10,8 @@ interface ChatSidebarProps {
   onSelect: (id: string) => void
   onNew: () => void
   onDelete?: (id: string) => void
+  /** Show close button (for mobile overlay) */
+  onClose?: () => void
 }
 
 /**
@@ -21,20 +23,26 @@ export function ChatSidebar({
   onSelect,
   onNew,
   onDelete,
+  onClose,
 }: ChatSidebarProps) {
   return (
     <div className="flex flex-col h-full border-r bg-muted/20 w-64 flex-shrink-0">
       {/* New conversation button */}
-      <div className="p-3 border-b">
+      <div className="p-3 border-b flex items-center gap-2">
         <Button
           onClick={onNew}
           variant="outline"
-          className="w-full justify-start gap-2"
+          className="flex-1 justify-start gap-2"
           size="sm"
         >
           <Plus className="h-4 w-4" />
           محادثة جديدة
         </Button>
+        {onClose && (
+          <Button variant="ghost" size="icon" className="h-8 w-8 lg:hidden" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </div>
 
       {/* Conversation list */}

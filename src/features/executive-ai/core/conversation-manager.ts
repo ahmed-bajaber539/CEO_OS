@@ -1,6 +1,7 @@
 import type {
   AgentManifest,
   AgentCapability,
+  AIContext,
   AIMessage,
   ToolCall,
   ToolResult,

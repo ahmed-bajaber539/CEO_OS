@@ -99,7 +99,7 @@ export default function IdeasPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground line-clamp-3 mb-4">{idea.description}</p>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Button variant="outline" size="sm" onClick={() => archiveMutation.mutate({ id: idea.id, input: { status: "archived" } })}>
                     <Archive className="size-3" />
                   </Button>

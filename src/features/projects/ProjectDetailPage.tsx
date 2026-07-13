@@ -92,8 +92,8 @@ export default function ProjectDetailPage() {
         العودة للمشاريع
       </button>
 
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex-1 min-w-0">
           {editingName ? (
             <div className="flex items-center gap-2">
               <Input

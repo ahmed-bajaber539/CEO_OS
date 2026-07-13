@@ -181,4 +181,11 @@ export interface IMemoryStore {
   forget(key: string): void
   getAll(): Record<string, unknown>
   clear(): void
+
+  /** Store conversation messages by ID */
+  rememberMessages(conversationId: string, messages: AIMessage[]): void
+  /** Retrieve conversation messages by ID */
+  recallMessages(conversationId: string): AIMessage[]
+  /** Delete all messages for a conversation */
+  forgetMessages(conversationId: string): void
 }

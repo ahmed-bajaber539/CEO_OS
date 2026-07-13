@@ -107,46 +107,48 @@ export default function DecisionsPage() {
           ) : decisions && decisions.length > 0 ? (
             <div className="divide-y">
               {decisions.map((decision) => (
-                <div key={decision.id} className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 shrink-0">
-                      <Scale className="size-5 text-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Badge variant="outline">{formatDate(decision.decided_at)}</Badge>
+                <div key={decision.id} className="p-4 sm:p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+                    <div className="flex items-start gap-3 sm:gap-4">
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+                        <Scale className="size-5 text-primary" />
                       </div>
-                      <h3 className="font-medium">{decision.title}</h3>
-                      {decision.reason && (
-                        <p className="text-sm text-muted-foreground mt-1">{decision.reason}</p>
-                      )}
-                      {decision.alternatives && decision.alternatives.length > 0 && (
-                        <div className="mt-2 flex flex-wrap gap-1">
-                          {decision.alternatives.map((alt, i) => (
-                            <Badge key={i} variant="secondary" className="text-xs">{alt}</Badge>
-                          ))}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Badge variant="outline">{formatDate(decision.decided_at)}</Badge>
                         </div>
-                      )}
-                      {/* Expanded details */}
-                      {expanded.has(decision.id) && (
-                        <div className="mt-3 space-y-2 border-t pt-3">
-                          {decision.expected_impact && (
-                            <div>
-                              <span className="text-xs font-medium text-muted-foreground">الأثر المتوقع:</span>
-                              <p className="text-sm">{decision.expected_impact}</p>
-                            </div>
-                          )}
-                          {decision.actual_result && (
-                            <div>
-                              <span className="text-xs font-medium text-muted-foreground">النتيجة الفعلية:</span>
-                              <p className="text-sm">{decision.actual_result}</p>
-                            </div>
-                          )}
-                        </div>
-                      )}
+                        <h3 className="font-medium">{decision.title}</h3>
+                        {decision.reason && (
+                          <p className="text-sm text-muted-foreground mt-1">{decision.reason}</p>
+                        )}
+                        {decision.alternatives && decision.alternatives.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1">
+                            {decision.alternatives.map((alt, i) => (
+                              <Badge key={i} variant="secondary" className="text-xs">{alt}</Badge>
+                            ))}
+                          </div>
+                        )}
+                        {/* Expanded details */}
+                        {expanded.has(decision.id) && (
+                          <div className="mt-3 space-y-2 border-t pt-3">
+                            {decision.expected_impact && (
+                              <div>
+                                <span className="text-xs font-medium text-muted-foreground">الأثر المتوقع:</span>
+                                <p className="text-sm">{decision.expected_impact}</p>
+                              </div>
+                            )}
+                            {decision.actual_result && (
+                              <div>
+                                <span className="text-xs font-medium text-muted-foreground">النتيجة الفعلية:</span>
+                                <p className="text-sm">{decision.actual_result}</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                     {/* Actions */}
-                    <div className="flex items-center gap-1 shrink-0">
+                    <div className="flex items-center gap-1 self-end sm:self-start">
                       <Button variant="ghost" size="icon" className="size-8" onClick={() => toggleExpand(decision.id)}>
                         {expanded.has(decision.id) ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
                       </Button>
