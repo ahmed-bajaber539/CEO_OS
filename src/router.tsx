@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react"
 import { Routes, Route } from "react-router-dom"
 import { AppLayout } from "@/components/layout/AppLayout"
+import { AuthGuard } from "@/components/auth/AuthGuard"
 import { ROUTES } from "@/lib/constants"
 
 const DashboardPage = lazy(() => import("@/features/dashboard/DashboardPage"))
@@ -26,16 +27,18 @@ export function AppRouter() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
-        <Route element={<AppLayout />}>
-          <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
-          <Route path={ROUTES.PROJECTS} element={<ProjectsPage />} />
-          <Route path={ROUTES.PROJECT_DETAIL} element={<ProjectDetailPage />} />
-          <Route path={ROUTES.GOALS} element={<GoalsPage />} />
-          <Route path={ROUTES.DAILY} element={<DailyPage />} />
-          <Route path={ROUTES.IDEAS} element={<IdeasPage />} />
-          <Route path={ROUTES.DECISIONS} element={<DecisionsPage />} />
-          <Route path={ROUTES.METRICS} element={<MetricsPage />} />
-          <Route path={ROUTES.EXECUTIVE_AI} element={<ExecutiveAIPage />} />
+        <Route element={<AuthGuard />}>
+          <Route element={<AppLayout />}>
+            <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+            <Route path={ROUTES.PROJECTS} element={<ProjectsPage />} />
+            <Route path={ROUTES.PROJECT_DETAIL} element={<ProjectDetailPage />} />
+            <Route path={ROUTES.GOALS} element={<GoalsPage />} />
+            <Route path={ROUTES.DAILY} element={<DailyPage />} />
+            <Route path={ROUTES.IDEAS} element={<IdeasPage />} />
+            <Route path={ROUTES.DECISIONS} element={<DecisionsPage />} />
+            <Route path={ROUTES.METRICS} element={<MetricsPage />} />
+            <Route path={ROUTES.EXECUTIVE_AI} element={<ExecutiveAIPage />} />
+          </Route>
         </Route>
         <Route path="/login" element={<LoginPage />} />
       </Routes>
