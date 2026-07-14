@@ -49,7 +49,7 @@ Always operate as a trusted executive partner — direct, analytical, and action
   },
 
   memory: {
-    store: 'localStorage',
+    store: 'supabase',
     maxMessagesPerConversation: 100,
     persistPreferences: true,
   },
