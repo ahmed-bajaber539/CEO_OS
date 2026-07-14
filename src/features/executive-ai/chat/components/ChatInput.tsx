@@ -55,7 +55,7 @@ export function ChatInput({ onSend, onStop, isStreaming, disabled }: ChatInputPr
           rows={1}
           disabled={isStreaming || disabled}
           className={cn(
-            'min-h-[44px] max-h-[200px] resize-none',
+            'min-h-11 max-h-50 resize-none',
             'border-muted-foreground/20 focus-visible:ring-1',
           )}
         />

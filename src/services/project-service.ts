@@ -79,7 +79,7 @@ export const ProjectService = {
   },
 
   async softDelete(id: string): Promise<void> {
-    const { error } = await supabase.rpc("soft_delete_project", { project_id: id })
+    const { error } = await supabase.rpc("soft_delete_project", { project_id: id } as never)
 
     if (error) throw error
     await ActivityService.log({
@@ -165,7 +165,7 @@ export const ProjectService = {
   },
 
   async deleteTask(taskId: string): Promise<void> {
-    const { error } = await supabase.rpc("hard_delete_project_task", { task_id: taskId })
+    const { error } = await supabase.rpc("hard_delete_project_task", { task_id: taskId } as never)
 
     if (error) throw error
   },
@@ -221,7 +221,7 @@ export const ProjectService = {
   },
 
   async deleteRisk(riskId: string): Promise<void> {
-    const { error } = await supabase.rpc("hard_delete_project_risk", { risk_id: riskId })
+    const { error } = await supabase.rpc("hard_delete_project_risk", { risk_id: riskId } as never)
 
     if (error) throw error
   },

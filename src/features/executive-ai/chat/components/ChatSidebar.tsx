@@ -26,7 +26,7 @@ export function ChatSidebar({
   onClose,
 }: ChatSidebarProps) {
   return (
-    <div className="flex flex-col h-full border-r bg-muted/20 w-64 flex-shrink-0">
+    <div className="flex flex-col h-full border-r bg-muted/20 w-64 shrink-0">
       {/* New conversation button */}
       <div className="p-3 border-b flex items-center gap-2">
         <Button
@@ -69,7 +69,7 @@ export function ChatSidebar({
                         : 'hover:bg-muted text-foreground/80',
                     )}
                   >
-                    <MessageSquare className="h-3.5 w-3.5 flex-shrink-0" />
+                    <MessageSquare className="h-3.5 w-3.5 shrink-0" />
                     <span className="truncate">{conv.title}</span>
                   </button>
 
@@ -77,7 +77,7 @@ export function ChatSidebar({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-6 w-6 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="h-6 w-6 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
                       onClick={(e) => {
                         e.stopPropagation()
                         onDelete(conv.id)

@@ -22,7 +22,7 @@ interface ContextPanelProps {
  */
 export function ContextPanel({ stats, intent }: ContextPanelProps) {
   return (
-    <div className="flex flex-col h-full border-l bg-muted/20 w-64 flex-shrink-0">
+    <div className="flex flex-col h-full border-l bg-muted/20 w-64 shrink-0">
       <div className="p-4 border-b">
         <h3 className="text-sm font-semibold">حالة النظام</h3>
       </div>
@@ -118,7 +118,7 @@ function StatItem({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="text-muted-foreground flex-shrink-0">{icon}</div>
+      <div className="text-muted-foreground shrink-0">{icon}</div>
       <div className="flex-1 min-w-0">
         <p className="text-xs text-muted-foreground truncate">{label}</p>
         <p className="text-sm font-medium">{value}</p>

@@ -91,7 +91,7 @@ export const GoalService = {
 
   async softDelete(id: string): Promise<void> {
     const { error } = await supabase
-      .rpc("soft_delete_goal", { goal_id: id })
+      .rpc("soft_delete_goal", { goal_id: id } as never)
 
     if (error) throw error
     await ActivityService.log({
@@ -150,7 +150,7 @@ export const GoalService = {
 
   async deleteIndicator(indicatorId: string): Promise<void> {
     const { error } = await supabase
-      .rpc("hard_delete_goal_indicator", { indicator_id: indicatorId })
+      .rpc("hard_delete_goal_indicator", { indicator_id: indicatorId } as never)
 
     if (error) throw error
   },
@@ -192,7 +192,7 @@ export const GoalService = {
 
   async deleteTask(taskId: string): Promise<void> {
     const { error } = await supabase
-      .rpc("hard_delete_goal_task", { task_id: taskId })
+      .rpc("hard_delete_goal_task", { task_id: taskId } as never)
 
     if (error) throw error
   },
