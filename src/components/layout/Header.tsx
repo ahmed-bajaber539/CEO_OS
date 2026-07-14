@@ -1,4 +1,4 @@
-import { Plus, Search, Bell, LogOut, Menu } from "lucide-react"
+import { Plus, Search, LogOut, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useQuickAddStore } from "@/stores/quick-add"
@@ -49,11 +49,6 @@ export function Header() {
         <Button size="sm" onClick={openQuickAdd} className="h-8 px-2 sm:px-3">
           <Plus className="size-4" />
           <span className="hidden sm:inline">إضافة سريعة</span>
-        </Button>
-
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="size-5" />
-          <span className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-destructive" />
         </Button>
 
         <Avatar className="size-8 cursor-pointer" title="تسجيل الخروج" onClick={handleLogout}>
