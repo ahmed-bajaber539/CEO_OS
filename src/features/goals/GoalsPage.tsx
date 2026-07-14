@@ -133,19 +133,19 @@ function GoalCard({ goal }: { goal: GoalRow; goalType: GoalType }) {
           <div className="flex items-center gap-2 shrink-0">
             <StatusBadge type="goal" status={goal.status} className="text-xs" />
             <button
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.stopPropagation()
-                useConfirmStore.getState().confirm({
+                const ok = await useConfirmStore.getState().confirm({
                   title: 'حذف الهدف',
                   message: 'هل أنت متأكد من حذف هذا الهدف؟ لا يمكن التراجع عن هذا الإجراء.',
                   variant: 'destructive',
                   confirmLabel: 'نعم، احذف',
-                  onConfirm: () => {
-                    deleteGoal.mutate(goal.id, {
-                      onSuccess: () => toast.success('تم حذف الهدف'),
-                    })
-                  },
                 })
+                if (ok) {
+                  deleteGoal.mutate(goal.id, {
+                    onSuccess: () => toast.success('تم حذف الهدف'),
+                  })
+                }
               }}
               className="text-muted-foreground hover:text-destructive"
             >

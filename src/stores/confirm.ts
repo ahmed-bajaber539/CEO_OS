@@ -1,52 +1,57 @@
 import { create } from 'zustand'
 
-export interface ConfirmOptions {
+export interface ConfirmDialogOptions {
   title: string
   message: string
   variant?: 'destructive' | 'default'
   confirmLabel?: string
   cancelLabel?: string
-  onConfirm: () => void
-  onCancel?: () => void
 }
 
-interface ConfirmState {
+interface ConfirmStore {
   isOpen: boolean
-  options: ConfirmOptions | null
-  confirm: (opts: ConfirmOptions) => void
-  handleConfirm: () => void
-  handleCancel: () => void
+  title: string
+  message: string
+  variant: 'destructive' | 'default'
+  confirmLabel?: string
+  cancelLabel?: string
+  _resolve: ((ok: boolean) => void) | null
+  confirm: (opts: ConfirmDialogOptions) => Promise<boolean>
+  _handleConfirm: () => void
+  _handleCancel: () => void
 }
 
-export const useConfirmStore = create<ConfirmState>((set, get) => ({
+export const useConfirmStore = create<ConfirmStore>((set, get) => ({
   isOpen: false,
-  options: null,
+  title: '',
+  message: '',
+  variant: 'default',
+  confirmLabel: undefined,
+  cancelLabel: undefined,
+  _resolve: null,
 
-  confirm: (opts) => set({ isOpen: true, options: opts }),
+  confirm: (opts) =>
+    new Promise<boolean>((resolve) => {
+      set({
+        isOpen: true,
+        title: opts.title,
+        message: opts.message,
+        variant: opts.variant ?? 'default',
+        confirmLabel: opts.confirmLabel,
+        cancelLabel: opts.cancelLabel,
+        _resolve: resolve,
+      })
+    }),
 
-  handleConfirm: () => {
-    const { options } = get()
-    if (!options) return
-    set({ isOpen: false, options: null })
-    options.onConfirm()
+  _handleConfirm: () => {
+    const { _resolve } = get()
+    set({ isOpen: false, _resolve: null })
+    _resolve?.(true)
   },
 
-  handleCancel: () => {
-    const { options } = get()
-    if (!options) return
-    options.onCancel?.()
-    set({ isOpen: false, options: null })
+  _handleCancel: () => {
+    const { _resolve } = get()
+    set({ isOpen: false, _resolve: null })
+    _resolve?.(false)
   },
 }))
-
-export function confirmAction(
-  opts: Omit<ConfirmOptions, 'onConfirm' | 'onCancel'>
-): Promise<boolean> {
-  return new Promise((resolve) => {
-    useConfirmStore.getState().confirm({
-      ...opts,
-      onConfirm: () => resolve(true),
-      onCancel: () => resolve(false),
-    })
-  })
-}

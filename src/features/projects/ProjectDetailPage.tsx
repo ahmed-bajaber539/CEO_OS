@@ -154,21 +154,21 @@ export default function ProjectDetailPage() {
           <Button
             variant="outline"
             size="icon"
-            onClick={() => {
-              useConfirmStore.getState().confirm({
+            onClick={async () => {
+              const ok = await useConfirmStore.getState().confirm({
                 title: 'حذف المشروع',
                 message: 'هل أنت متأكد من حذف هذا المشروع؟ سيتم حذف جميع المهام والمراحل المرتبطة به. لا يمكن التراجع عن هذا الإجراء.',
                 variant: 'destructive',
                 confirmLabel: 'نعم، احذف المشروع',
-                onConfirm: () => {
-                  deleteProject.mutate(project.id, {
-                    onSuccess: () => {
-                      toast.success('تم حذف المشروع')
-                      navigate('/projects')
-                    },
-                  })
-                },
               })
+              if (ok) {
+                deleteProject.mutate(project.id, {
+                  onSuccess: () => {
+                    toast.success('تم حذف المشروع')
+                    navigate('/projects')
+                  },
+                })
+              }
             }}
           >
             <Trash2 className="size-4 text-destructive" />
