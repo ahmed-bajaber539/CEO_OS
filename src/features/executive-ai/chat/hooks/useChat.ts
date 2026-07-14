@@ -1,33 +1,70 @@
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, useEffect } from 'react'
 import { bootstrapExecutiveAI } from '../../core/index'
+import { SupabaseMemoryStore } from '../../core/supabase-memory-store'
 import { useExecutiveAIStore } from '../../stores/executive-ai'
+import { supabase } from '@/lib/supabase'
 import type { Conversation } from '../../core/types'
 
 /**
  * useChat — the bridge between React UI and the AI Core Layer.
  *
  * Responsibilities:
- *  - Initialize the AI Core once (via ref)
- *  - Expose `sendMessage`, `stopGeneration`, `switchConversation`, `newConversation`
- *  - Handle the streaming event loop and update the Zustand store
- *  - Load/save conversations from MemoryStore
+ *  - Initialize AI Core with Supabase memory when authenticated
+ *  - Load/save conversations from Supabase (per-user isolation)
+ *  - Handle auth state changes: reload memory on login, clear on logout
+ *  - Expose sendMessage, stopGeneration, switchConversation, etc.
  */
 export function useChat() {
   const store = useExecutiveAIStore()
   const coreRef = useRef<ReturnType<typeof bootstrapExecutiveAI> | null>(null)
+  const loadedRef = useRef(false)
 
   // Lazy-init the AI Core (once)
   function getCore() {
     if (!coreRef.current) {
-      coreRef.current = bootstrapExecutiveAI()
-      // Load saved conversations from memory
-      const saved = coreRef.current.memory.recall<Conversation[]>('conversations') ?? []
-      if (saved.length > 0) {
-        store.setConversations(saved)
-      }
+      coreRef.current = bootstrapExecutiveAI(supabase)
     }
     return coreRef.current
   }
+
+  // Load conversations from Supabase on mount & auth changes
+  useEffect(() => {
+    const loadConversations = async () => {
+      const core = getCore()
+      if (core.memory instanceof SupabaseMemoryStore) {
+        const saved = await core.memory.recallConversations()
+        if (saved.length > 0) {
+          store.setConversations(saved)
+        }
+        loadedRef.current = true
+      } else {
+        const saved = await core.memory.recall<Conversation[]>('conversations') ?? []
+        if (saved.length > 0) {
+          store.setConversations(saved)
+        }
+        loadedRef.current = true
+      }
+    }
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event) => {
+      if (event === 'SIGNED_IN') {
+        coreRef.current = null
+        await loadConversations()
+      } else if (event === 'SIGNED_OUT') {
+        coreRef.current = null
+        store.setConversations([])
+        store.setMessages([])
+        store.setActiveConversation(null)
+        loadedRef.current = false
+      }
+    })
+
+    if (!loadedRef.current) {
+      loadConversations()
+    }
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   // ── Send Message ──────────────────────────────────────────
 
@@ -37,13 +74,17 @@ export function useChat() {
 
       const core = getCore()
 
-      // Auto-create conversation if none active
-      const conversationId: string = store.activeConversationId ?? store.newConversation()
+      let conversationId: string
+      if (!store.activeConversationId) {
+        conversationId = store.newConversation()
+        if (core.memory instanceof SupabaseMemoryStore) {
+          await core.memory.createConversation(conversationId, 'محادثة جديدة')
+        }
+      } else {
+        conversationId = store.activeConversationId
+      }
 
-      // Add user message to UI
       store.addMessage({ role: 'user', content })
-
-      // Start streaming
       store.setStreaming(true)
       store.clearStreamingContent()
       store.setSuggestedActions([])
@@ -63,41 +104,29 @@ export function useChat() {
                 isAmbiguous: event.intent.isAmbiguous,
               })
               break
-
             case 'token':
               assistantContent += event.content
               store.appendStreamingContent(event.content)
               break
-
             case 'context':
-              // Context built — transparent to user, could show loading state
               break
-
             case 'tool_call':
-              // Tool calls handled invisibly — LLM processes results internally
               break
-
             case 'tool_result':
-              // Tool results are internal — skip UI for now
               break
-
             case 'tool_confirmation_needed':
-              // Destructive action needs user approval (human-in-the-loop)
               store.setPendingConfirmation({
                 toolName: event.toolName,
                 toolArgs: event.args,
               })
               break
-
             case 'done':
-              // Add the complete assistant message
               if (assistantContent) {
                 store.addMessage({ role: 'assistant', content: assistantContent })
               }
               store.clearStreamingContent()
               store.setSuggestedActions(event.suggestedActions)
               break
-
             case 'error':
               store.addMessage({
                 role: 'assistant',
@@ -115,8 +144,11 @@ export function useChat() {
         store.clearStreamingContent()
       } finally {
         store.setStreaming(false)
-        // Persist conversations list
-        core.memory.remember('conversations', store.conversations)
+        if (core.memory instanceof SupabaseMemoryStore) {
+          await core.memory.rememberConversations(store.conversations)
+        } else {
+          await core.memory.remember('conversations', store.conversations)
+        }
       }
     },
     [store.isStreaming, store.activeConversationId],
@@ -136,10 +168,10 @@ export function useChat() {
   // ── Conversation Management ───────────────────────────────
 
   const switchConversation = useCallback(
-    (id: string) => {
+    async (id: string) => {
       const core = getCore()
       store.setActiveConversation(id)
-      const messages = core.memory.recallMessages(id)
+      const messages = await core.memory.recallMessages(id)
       store.setMessages(messages ?? [])
       store.clearStreamingContent()
       store.setSuggestedActions([])
@@ -148,29 +180,42 @@ export function useChat() {
     [],
   )
 
-  const newConversation = useCallback(() => {
+  const newConversation = useCallback(async () => {
     const core = getCore()
     const id = store.newConversation()
-    core.memory.remember('conversations', store.conversations)
+    if (core.memory instanceof SupabaseMemoryStore) {
+      await core.memory.createConversation(id, 'محادثة جديدة')
+      await core.memory.rememberConversations(store.conversations)
+    } else {
+      await core.memory.remember('conversations', store.conversations)
+    }
     return id
   }, [store.conversations])
 
-  const clearConversation = useCallback(() => {
+  const clearConversation = useCallback(async () => {
     const core = getCore()
     const id = store.activeConversationId
     if (id) {
-      core.memory.forgetMessages(id)
+      await core.memory.forgetMessages(id)
       store.clearMessages()
     }
   }, [store.activeConversationId])
 
   const deleteConversation = useCallback(
-    (id: string) => {
+    async (id: string) => {
       const core = getCore()
-      core.memory.forgetMessages(id)
+      if (core.memory instanceof SupabaseMemoryStore) {
+        await core.memory.deleteConversation(id)
+      } else {
+        await core.memory.forgetMessages(id)
+      }
       const updated = store.conversations.filter((c) => c.id !== id)
       store.setConversations(updated)
-      core.memory.remember('conversations', updated)
+      if (core.memory instanceof SupabaseMemoryStore) {
+        await core.memory.rememberConversations(updated)
+      } else {
+        await core.memory.remember('conversations', updated)
+      }
       if (store.activeConversationId === id) {
         const next = updated[0]
         if (next) {
@@ -186,10 +231,7 @@ export function useChat() {
     [store.activeConversationId, store.conversations],
   )
 
-  // ── Return ────────────────────────────────────────────────
-
   return {
-    // State (from store)
     conversations: store.conversations,
     activeConversationId: store.activeConversationId,
     messages: store.messages,
@@ -198,16 +240,12 @@ export function useChat() {
     currentIntent: store.currentIntent,
     suggestedActions: store.suggestedActions,
     pendingConfirmation: store.pendingConfirmation,
-
-    // Actions
     sendMessage,
     stopGeneration,
     switchConversation,
     newConversation,
     clearConversation,
     deleteConversation,
-
-    // Direct store access for simple updates
     setPendingConfirmation: store.setPendingConfirmation,
   }
 }

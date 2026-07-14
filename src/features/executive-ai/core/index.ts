@@ -37,6 +37,7 @@ export { ToolExecutor } from './tool-executor'
 
 // ─── Memory Store ─────────────────────────────────────────────
 export { LocalStorageMemoryStore } from './memory-store'
+export { SupabaseMemoryStore } from './supabase-memory-store'
 
 // ─── Context Builder ──────────────────────────────────────────
 export { SmartContextBuilder } from './context-builder'
@@ -56,6 +57,8 @@ import { KeywordIntentResolver } from './intent-resolver'
 import { createToolRegistry } from './tool-registry'
 import { ToolExecutor } from './tool-executor'
 import { LocalStorageMemoryStore } from './memory-store'
+import { SupabaseMemoryStore } from './supabase-memory-store'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import { SmartContextBuilder } from './context-builder'
 import { DeepSeekLLMProvider } from './llm-provider'
 import { ConversationManager } from './conversation-manager'
@@ -68,13 +71,15 @@ import { ConversationManager } from './conversation-manager'
  *
  * For multi-agent future: call `bootstrapExecutiveAI()` with a different manifest.
  */
-export function bootstrapExecutiveAI() {
+export function bootstrapExecutiveAI(supabaseClient?: SupabaseClient) {
   const manifest = executiveManifest
   const capabilities = AGENT_CAPABILITIES
   const intentResolver = new KeywordIntentResolver()
   const toolRegistry = createToolRegistry()
   const toolExecutor = new ToolExecutor(toolRegistry, manifest)
-  const memory = new LocalStorageMemoryStore()
+  const memory = supabaseClient
+    ? new SupabaseMemoryStore(supabaseClient)
+    : new LocalStorageMemoryStore()
   const contextBuilder = new SmartContextBuilder(manifest)
   const llmProvider = new DeepSeekLLMProvider(manifest)
 

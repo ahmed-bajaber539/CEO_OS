@@ -8,6 +8,7 @@ export {
   createToolRegistry,
   ToolExecutor,
   LocalStorageMemoryStore,
+  SupabaseMemoryStore,
   SmartContextBuilder,
   DeepSeekLLMProvider,
   ConversationManager,

@@ -176,16 +176,16 @@ export interface ILLMProvider {
 }
 
 export interface IMemoryStore {
-  remember(key: string, value: unknown): void
-  recall<T>(key: string): T | undefined
-  forget(key: string): void
-  getAll(): Record<string, unknown>
-  clear(): void
+  remember(key: string, value: unknown): Promise<void>
+  recall<T>(key: string): Promise<T | undefined>
+  forget(key: string): Promise<void>
+  getAll(): Promise<Record<string, unknown>>
+  clear(): Promise<void>
 
   /** Store conversation messages by ID */
-  rememberMessages(conversationId: string, messages: AIMessage[]): void
+  rememberMessages(conversationId: string, messages: AIMessage[]): Promise<void>
   /** Retrieve conversation messages by ID */
-  recallMessages(conversationId: string): AIMessage[]
+  recallMessages(conversationId: string): Promise<AIMessage[]>
   /** Delete all messages for a conversation */
-  forgetMessages(conversationId: string): void
+  forgetMessages(conversationId: string): Promise<void>
 }

@@ -80,7 +80,7 @@ export class ConversationManager {
     userMessage: string,
   ): AsyncGenerator<ConversationEvent> {
     // ── 1. Recall conversation history ───────────────────────
-    const history: AIMessage[] = this.memory.recallMessages(conversationId) ?? []
+    const history: AIMessage[] = (await this.memory.recallMessages(conversationId)) ?? []
 
     // ── 2. Resolve intent ───────────────────────────────────
     const resolved = await this.intentResolver.resolve(userMessage, history)
@@ -212,7 +212,7 @@ export class ConversationManager {
       // Truncate to max messages per conversation
       const maxMsgs = this.manifest.memory.maxMessagesPerConversation
       const truncated = workingHistory.slice(-maxMsgs)
-      this.memory.rememberMessages(conversationId, truncated)
+      await this.memory.rememberMessages(conversationId, truncated)
 
       // ── 9. Yield done with suggested actions ─────────────
       yield {

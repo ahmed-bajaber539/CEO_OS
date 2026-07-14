@@ -25,7 +25,7 @@ export class LocalStorageMemoryStore implements IMemoryStore {
     return `${this.prefix}${k}`
   }
 
-  remember(key: string, value: unknown): void {
+  async remember(key: string, value: unknown): Promise<void> {
     try {
       const serialized = JSON.stringify(value)
       localStorage.setItem(this.key(key), serialized)
@@ -34,7 +34,7 @@ export class LocalStorageMemoryStore implements IMemoryStore {
     }
   }
 
-  recall<T>(key: string): T | undefined {
+  async recall<T>(key: string): Promise<T | undefined> {
     try {
       const raw = localStorage.getItem(this.key(key))
       if (raw === null) return undefined
@@ -45,23 +45,23 @@ export class LocalStorageMemoryStore implements IMemoryStore {
     }
   }
 
-  forget(key: string): void {
+  async forget(key: string): Promise<void> {
     localStorage.removeItem(this.key(key))
   }
 
-  getAll(): Record<string, unknown> {
+  async getAll(): Promise<Record<string, unknown>> {
     const result: Record<string, unknown> = {}
     for (let i = 0; i < localStorage.length; i++) {
       const k = localStorage.key(i)
       if (k && k.startsWith(this.prefix)) {
         const shortKey = k.slice(this.prefix.length)
-        result[shortKey] = this.recall(shortKey)
+        result[shortKey] = await this.recall(shortKey)
       }
     }
     return result
   }
 
-  clear(): void {
+  async clear(): Promise<void> {
     const keysToRemove: string[] = []
     for (let i = 0; i < localStorage.length; i++) {
       const k = localStorage.key(i)
@@ -75,38 +75,37 @@ export class LocalStorageMemoryStore implements IMemoryStore {
   // ── Convenience Methods ──────────────────────────────────────
 
   /** Store conversation messages */
-  rememberMessages(conversationId: string, messages: AIMessage[]): void {
-    // Truncate to max (policy managed by caller or config)
-    this.remember(`messages.${conversationId}`, messages)
+  async rememberMessages(conversationId: string, messages: AIMessage[]): Promise<void> {
+    await this.remember(`messages.${conversationId}`, messages)
   }
 
   /** Recall conversation messages */
-  recallMessages(conversationId: string): AIMessage[] {
-    return this.recall<AIMessage[]>(`messages.${conversationId}`) ?? []
+  async recallMessages(conversationId: string): Promise<AIMessage[]> {
+    return (await this.recall<AIMessage[]>(`messages.${conversationId}`)) ?? []
   }
 
   /** Forget conversation messages */
-  forgetMessages(conversationId: string): void {
-    this.forget(`messages.${conversationId}`)
+  async forgetMessages(conversationId: string): Promise<void> {
+    await this.forget(`messages.${conversationId}`)
   }
 
   /** Store user preferences */
-  rememberPreferences(prefs: Record<string, unknown>): void {
-    this.remember('preferences', prefs)
+  async rememberPreferences(prefs: Record<string, unknown>): Promise<void> {
+    await this.remember('preferences', prefs)
   }
 
   /** Recall user preferences */
-  recallPreferences(): Record<string, unknown> {
-    return this.recall<Record<string, unknown>>('preferences') ?? {}
+  async recallPreferences(): Promise<Record<string, unknown>> {
+    return (await this.recall<Record<string, unknown>>('preferences')) ?? {}
   }
 
   /** Store session context (last N actions) */
-  rememberSessionContext(context: unknown[]): void {
-    this.remember('session_context', context)
+  async rememberSessionContext(context: unknown[]): Promise<void> {
+    await this.remember('session_context', context)
   }
 
   /** Recall session context */
-  recallSessionContext(): unknown[] {
-    return this.recall<unknown[]>('session_context') ?? []
+  async recallSessionContext(): Promise<unknown[]> {
+    return (await this.recall<unknown[]>('session_context')) ?? []
   }
 }
