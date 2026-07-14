@@ -11,7 +11,7 @@ SECURITY DEFINER
 SET search_path = ''
 AS $$
 BEGIN
-  UPDATE projects SET deleted_at = now() WHERE id = project_id;
+  UPDATE public.projects SET deleted_at = now() WHERE id = project_id;
 END;
 $$;
 
@@ -23,15 +23,11 @@ SECURITY DEFINER
 SET search_path = ''
 AS $$
 BEGIN
-  UPDATE goals SET deleted_at = now() WHERE id = goal_id;
+  UPDATE public.goals SET deleted_at = now() WHERE id = goal_id;
 END;
 $$;
 
--- Project tasks: hard-delete via SECURITY DEFINER (already using .delete())
--- Goal tasks: hard-delete via SECURITY DEFINER (already using .delete())
--- These already work because DELETE on child tables relies on parent ownership checks
--- but adding SECURITY DEFINER wrappers for consistency and reliability.
-
+-- Project tasks: hard-delete via SECURITY DEFINER
 CREATE OR REPLACE FUNCTION hard_delete_project_task(task_id UUID)
 RETURNS void
 LANGUAGE plpgsql
@@ -39,10 +35,11 @@ SECURITY DEFINER
 SET search_path = ''
 AS $$
 BEGIN
-  DELETE FROM project_tasks WHERE id = task_id;
+  DELETE FROM public.project_tasks WHERE id = task_id;
 END;
 $$;
 
+-- Goal tasks: hard-delete via SECURITY DEFINER
 CREATE OR REPLACE FUNCTION hard_delete_goal_task(task_id UUID)
 RETURNS void
 LANGUAGE plpgsql
@@ -50,7 +47,7 @@ SECURITY DEFINER
 SET search_path = ''
 AS $$
 BEGIN
-  DELETE FROM goal_tasks WHERE id = task_id;
+  DELETE FROM public.goal_tasks WHERE id = task_id;
 END;
 $$;
 
@@ -62,7 +59,7 @@ SECURITY DEFINER
 SET search_path = ''
 AS $$
 BEGIN
-  DELETE FROM project_risks WHERE id = risk_id;
+  DELETE FROM public.project_risks WHERE id = risk_id;
 END;
 $$;
 
@@ -74,6 +71,6 @@ SECURITY DEFINER
 SET search_path = ''
 AS $$
 BEGIN
-  DELETE FROM goal_indicators WHERE id = indicator_id;
+  DELETE FROM public.goal_indicators WHERE id = indicator_id;
 END;
 $$;
