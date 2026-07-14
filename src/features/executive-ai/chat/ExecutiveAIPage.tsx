@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PanelLeft, PanelRight } from 'lucide-react'
+import { PanelLeft, PanelRight, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useChat } from './hooks/useChat'
 import { ChatSidebar } from './components/ChatSidebar'
@@ -131,8 +131,8 @@ export default function ExecutiveAIPage() {
           <div className="fixed inset-0 bg-black/50" onClick={() => setShowContext(false)} />
           <div className="fixed inset-y-0 left-0 w-72 bg-background border-r shadow-lg z-50">
             <div className="flex items-center justify-between p-3 border-b">
-              <Button variant="ghost" size="sm" onClick={() => setShowContext(false)}>
-                ✕
+              <Button variant="ghost" size="icon" onClick={() => setShowContext(false)}>
+                <X className="h-5 w-5" />
               </Button>
             </div>
             <ContextPanel
