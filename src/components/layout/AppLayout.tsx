@@ -3,6 +3,7 @@ import { Sidebar } from "./Sidebar"
 import { Header } from "./Header"
 import { QuickAdd } from "./QuickAdd"
 import { SearchDialog } from "./SearchDialog"
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog"
 import { TooltipProvider } from "@/components/ui/tooltip"
 
 export function AppLayout() {
@@ -19,6 +20,7 @@ export function AppLayout() {
       </div>
       <QuickAdd />
       <SearchDialog />
+      <ConfirmDialog />
     </TooltipProvider>
   )
 }

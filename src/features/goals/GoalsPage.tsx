@@ -53,6 +53,7 @@ import { EmptyState } from "@/components/shared/EmptyState"
 import { StatusBadge } from "@/components/shared/StatusBadge"
 import { supabase } from "@/lib/supabase"
 import { toast } from "sonner"
+import { useConfirmStore } from "@/stores/confirm"
 
 type GoalRow = Database["public"]["Tables"]["goals"]["Row"]
 type GoalType = Database["public"]["Enums"]["goal_type"]
@@ -134,11 +135,17 @@ function GoalCard({ goal }: { goal: GoalRow; goalType: GoalType }) {
             <button
               onClick={(e) => {
                 e.stopPropagation()
-                if (confirm("هل أنت متأكد من حذف الهدف؟")) {
-                  deleteGoal.mutate(goal.id, {
-                    onSuccess: () => toast.success("تم حذف الهدف"),
-                  })
-                }
+                useConfirmStore.getState().confirm({
+                  title: 'حذف الهدف',
+                  message: 'هل أنت متأكد من حذف هذا الهدف؟ لا يمكن التراجع عن هذا الإجراء.',
+                  variant: 'destructive',
+                  confirmLabel: 'نعم، احذف',
+                  onConfirm: () => {
+                    deleteGoal.mutate(goal.id, {
+                      onSuccess: () => toast.success('تم حذف الهدف'),
+                    })
+                  },
+                })
               }}
               className="text-muted-foreground hover:text-destructive"
             >
@@ -272,7 +279,7 @@ function GoalCard({ goal }: { goal: GoalRow; goalType: GoalType }) {
                     onChange={(e) => setIndicatorTarget(e.target.value)}
                     placeholder="القيمة المستهدفة"
                     size={10}
-                    className="max-w-[120px]"
+                    className="max-w-30"
                   />
                 </div>
                 <Button
@@ -333,7 +340,7 @@ function GoalCard({ goal }: { goal: GoalRow; goalType: GoalType }) {
                   })
                 }
               >
-                <SelectTrigger className="w-[120px] h-8 text-xs">
+                <SelectTrigger className="w-30 h-8 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

@@ -37,6 +37,7 @@ import { LoadingPage } from "@/components/shared/LoadingSkeleton"
 import { STATUS } from "@/lib/constants"
 import { formatDate } from "@/lib/utils"
 import { toast } from "sonner"
+import { useConfirmStore } from "@/stores/confirm"
 
 export default function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -154,14 +155,20 @@ export default function ProjectDetailPage() {
             variant="outline"
             size="icon"
             onClick={() => {
-              if (confirm("هل أنت متأكد من حذف المشروع؟")) {
-                deleteProject.mutate(project.id, {
-                  onSuccess: () => {
-                    toast.success("تم حذف المشروع")
-                    navigate("/projects")
-                  },
-                })
-              }
+              useConfirmStore.getState().confirm({
+                title: 'حذف المشروع',
+                message: 'هل أنت متأكد من حذف هذا المشروع؟ سيتم حذف جميع المهام والمراحل المرتبطة به. لا يمكن التراجع عن هذا الإجراء.',
+                variant: 'destructive',
+                confirmLabel: 'نعم، احذف المشروع',
+                onConfirm: () => {
+                  deleteProject.mutate(project.id, {
+                    onSuccess: () => {
+                      toast.success('تم حذف المشروع')
+                      navigate('/projects')
+                    },
+                  })
+                },
+              })
             }}
           >
             <Trash2 className="size-4 text-destructive" />
