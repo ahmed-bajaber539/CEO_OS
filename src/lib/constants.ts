@@ -26,13 +26,13 @@ export const PRIORITY_CONFIG = {
 
 export const NAV_ITEMS = [
   { label: "لوحة التحكم", icon: "LayoutDashboard", path: ROUTES.DASHBOARD },
+  { label: "المدير التنفيذي", icon: "Bot", path: ROUTES.EXECUTIVE_AI },
   { label: "المشاريع", icon: "FolderKanban", path: ROUTES.PROJECTS },
   { label: "الأهداف", icon: "Target", path: ROUTES.GOALS },
   { label: "المهام اليومية", icon: "CalendarCheck", path: ROUTES.DAILY },
   { label: "الأفكار", icon: "Lightbulb", path: ROUTES.IDEAS },
   { label: "القرارات", icon: "Scale", path: ROUTES.DECISIONS },
   { label: "المؤشرات", icon: "BarChart3", path: ROUTES.METRICS },
-  { label: "المدير التنفيذي", icon: "Bot", path: ROUTES.EXECUTIVE_AI },
 ] as const
 
 // ─── Unified Status System ───────────────────────────────────

@@ -52,8 +52,13 @@ export function Sidebar() {
     <>
       {/* Logo */}
       <div className={cn("flex h-14 items-center border-b px-4", isCollapsed && "md:justify-center")}>
+        <img
+          src="/logo.png"
+          alt="CEO OS"
+          className={cn("h-8 w-auto object-contain", isCollapsed && "h-7")}
+        />
         {!isCollapsed && (
-          <span className="font-semibold text-lg tracking-tight">CEO OS</span>
+          <span className="font-semibold text-lg tracking-tight ml-2">CEO OS</span>
         )}
         {/* Close button on mobile */}
         <button
