@@ -14,28 +14,34 @@ interface ConfirmState {
   isOpen: boolean
   options: ConfirmOptions | null
   confirm: (opts: ConfirmOptions) => void
-  close: () => void
+  handleConfirm: () => void
+  handleCancel: () => void
 }
 
-export const useConfirmStore = create<ConfirmState>((set) => ({
+export const useConfirmStore = create<ConfirmState>((set, get) => ({
   isOpen: false,
   options: null,
 
   confirm: (opts) => set({ isOpen: true, options: opts }),
 
-  close: () => {
-    set((s) => {
-      s.options?.onCancel?.()
-      return { isOpen: false, options: null }
-    })
+  handleConfirm: () => {
+    const { options } = get()
+    if (!options) return
+    set({ isOpen: false, options: null })
+    options.onConfirm()
+  },
+
+  handleCancel: () => {
+    const { options } = get()
+    if (!options) return
+    options.onCancel?.()
+    set({ isOpen: false, options: null })
   },
 }))
 
-/**
- * Imperative confirm helper — returns a Promise that resolves on confirm, rejects on cancel.
- * Usage: const ok = await confirmAction({ title: '...', message: '...' })
- */
-export function confirmAction(opts: Omit<ConfirmOptions, 'onConfirm' | 'onCancel'>): Promise<boolean> {
+export function confirmAction(
+  opts: Omit<ConfirmOptions, 'onConfirm' | 'onCancel'>
+): Promise<boolean> {
   return new Promise((resolve) => {
     useConfirmStore.getState().confirm({
       ...opts,
